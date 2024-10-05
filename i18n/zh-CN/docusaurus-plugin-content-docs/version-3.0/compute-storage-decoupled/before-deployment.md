@@ -141,7 +141,7 @@ Apache Doris 存算分离模式会将数据存储在 S3 服务或 HDFS 服务上
    ```
 4. 创建一个桶
    ```bash
-   mc mb myminio/doris
+   ./mc mb myminio/doris
    ```
 5. 验证是否正常工作
    ```bash

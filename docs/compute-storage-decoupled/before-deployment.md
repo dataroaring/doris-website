@@ -139,7 +139,7 @@ The Apache Doris (cloud mode) stores data on S3 or HDFS services. If you already
    ```
 4. create a bucket
    ```bash
-   mc mb myminio/doris
+   ./mc mb myminio/doris
    ```
 5. verify if it is working properly
    ```bash
