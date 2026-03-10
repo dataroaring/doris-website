@@ -51,17 +51,11 @@ For a POC, **Duplicate Key works for most scenarios**. Switch only if you have a
 
 **Why it matters:** Partitioning splits data into independent units. When a query includes a partition column in its WHERE clause, Doris only scans the relevant partitions — this is called **partition pruning** and it can skip the vast majority of data.
 
-**How to choose:**
-
-- **Have a time column?** → Use `AUTO PARTITION BY RANGE(date_trunc(time_col, 'day'))`. Partitions are created automatically during import, no manual management needed.
-
-For full syntax and advanced options, see [Auto Partition](../table-design/data-partitioning/auto-partitioning).
+**How to choose:** If you have a time column, use `AUTO PARTITION BY RANGE(date_trunc(time_col, 'day'))`. Partitions are created automatically during import, no manual management needed. For full syntax and advanced options, see [Auto Partition](../table-design/data-partitioning/auto-partitioning).
 
 ## 4. Bucketing
 
-**Why it matters:** Each bucket is stored as one or more **tablets** (one per replica). A tablet lives on a single BE node, so scanning a tablet can only use that one BE. For a single query, parallelism is determined by `partitions × buckets` — replicas are not used simultaneously. For concurrent queries, different replicas can serve different queries, so the total tablet count `partitions × buckets × replicas` determines cluster-wide throughput.
-
-**Partitions first, then buckets.** Both partitioning and bucketing increase tablet count, but partitions also enable pruning and are easier to manage (add/drop). When you need more parallelism, prefer adding partitions before increasing bucket count.
+**Why it matters:** Each bucket is stored as one or more **tablets** (one per replica). A tablet lives on a single BE node, so scanning a tablet can only use that one BE. For a single query, parallelism is determined by `partitions × buckets` — replicas are not used simultaneously. For concurrent queries, different replicas can serve different queries, so the total tablet count `partitions × buckets × replicas` determines cluster-wide throughput. When you need more parallelism, prefer adding partitions before increasing bucket count — partitions also enable pruning and are easier to manage.
 
 **How to choose bucket count:** Follow these four rules:
 
@@ -98,7 +92,7 @@ Things that surprise new users. Read these before you create your first table.
 
 **Aggregate Key tables don't support `count(*)` well.** Because values are pre-aggregated, `count(*)` cannot simply count rows. The workaround is to add a column like `row_count BIGINT SUM DEFAULT '1'` and query `SELECT SUM(row_count)` instead.
 
-**Bucket count on existing partitions cannot be changed.** You can only adjust bucket count for **new** partitions. Follow the three rules in the Bucketing section above to choose the right count upfront.
+**Bucket count on existing partitions cannot be changed.** You can only adjust bucket count for **new** partitions. Follow the four rules in the Bucketing section above to choose the right count upfront.
 
 ## Typical Use Cases
 
