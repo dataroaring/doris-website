@@ -205,9 +205,3 @@ SELECT * FROM lakehouse.db.events WHERE dt = '2025-01-01';
 - **宽表使用 `SELECT *`。**Doris 是列式存储——只读取请求的列。对多列宽表使用 `SELECT *` 会读取所有列，浪费 I/O。请只查询需要的列。
 
 诊断慢查询请使用 [Query Profile](../query-acceleration/query-profile) 查看耗时分布。
-
-## 修复错误
-
-POC 阶段，大多数决策都可以通过新建表并执行 `INSERT INTO new_table SELECT * FROM old_table` 来修复——耗时几分钟而非几天。唯一的例外是已有分区的分桶数无法原地修改。从合理的选择开始，观察实际表现，再进行优化。
-
-生产级建表指导见[最佳实践](../table-design/best-practice)。

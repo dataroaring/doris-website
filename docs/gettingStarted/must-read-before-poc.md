@@ -205,9 +205,3 @@ For more loading optimization tips, see [Load Best Practices](../data-operate/im
 - **`SELECT *` on wide tables.** Doris is a columnar store — it only reads the columns you request. `SELECT *` on a table with many columns forces reading all of them, wasting I/O. Select only the columns you need.
 
 To diagnose slow queries, use [Query Profile](../query-acceleration/query-profile) to see where time is spent.
-
-## Fixing Mistakes
-
-During a POC, most decisions can be fixed by creating a new table and running `INSERT INTO new_table SELECT * FROM old_table` — this takes minutes, not days. The exception is that bucket count on existing partitions cannot be changed in place. Start with reasonable choices, measure, then optimize.
-
-For production-level table design guidance, see [Best Practices](../table-design/best-practice).
