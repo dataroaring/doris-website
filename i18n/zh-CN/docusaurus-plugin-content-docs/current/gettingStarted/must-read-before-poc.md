@@ -41,7 +41,7 @@ CREATE TABLE my_table
 
 POC 阶段，**Duplicate Key 适用于大多数场景**。只有在明确需要更新或预聚合时才切换。详细对比见[数据模型概述](../table-design/data-model/overview)。
 
-## 2. 排序键
+## 2. Sort Key（排序键）
 
 **为什么重要：**排序键决定数据在磁盘上的**物理排列顺序**。Doris 会在排序键的前 36 字节上自动构建[前缀索引](../table-design/index/prefix-index)，使基于这些列的过滤查询显著加速。但当遇到 `VARCHAR` 列时，前缀索引会立即截断——后续列不会被包含。因此，请将定长列（INT、BIGINT、DATE）放在 VARCHAR 前面，以最大化索引覆盖范围。
 
@@ -94,9 +94,9 @@ Hash 与 Random 分桶的详细对比见[数据分桶](../table-design/data-part
 
 **已有分区的分桶数不可更改。**只能调整**新分区**的分桶数。请参考上方分桶章节的四条规则来选择合适的分桶数。
 
-## 典型使用场景
+## 建表模板
 
-常见 POC 场景的建表模板，可直接使用。
+常见 POC 场景的建表 SQL，可直接使用。
 
 ### 日志 / 事件分析
 
@@ -178,7 +178,7 @@ SELECT * FROM lakehouse.db.events WHERE dt = '2025-01-01';
 
 这是验证 Doris 查询性能最快的方式——直接在现有数据上查询。如需更好性能，之后再创建内部表。详见[湖仓一体概述](../lakehouse/lakehouse-overview)。
 
-## 常见性能陷阱
+## 性能陷阱
 
 ### 导入
 
@@ -206,7 +206,7 @@ SELECT * FROM lakehouse.db.events WHERE dt = '2025-01-01';
 
 诊断慢查询请使用 [Query Profile](../query-acceleration/query-profile) 查看耗时分布。
 
-## 选错了怎么办？
+## 修复错误
 
 POC 阶段，大多数决策都可以通过新建表并执行 `INSERT INTO new_table SELECT * FROM old_table` 来修复——耗时几分钟而非几天。唯一的例外是已有分区的分桶数无法原地修改。从合理的选择开始，观察实际表现，再进行优化。
 
